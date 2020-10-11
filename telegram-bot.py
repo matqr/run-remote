@@ -41,10 +41,12 @@ def reply(bot, chat_id, update_id, log_path):
 
     for update in bot.get_updates(offset=update_id, timeout=10):
         update_id = update.update_id + 1
-        if 'logs' in update.message.text:
-            message = check_logs(log_path) 
-            update.message.reply_text(message)
-
+        if update.message:  
+            if 'logs' in update.message.text:
+                message = check_logs(log_path) 
+                update.message.reply_text(message)
+        else:
+            print("woopsie")
     return update_id
 
 def check_logs(log_path):
