@@ -30,30 +30,37 @@ def main():
         experiment_ended(bot, chat_id, log_path, ending_phrase)
         try:
             # send latest logs of running experiment
-            update_id = reply(bot, chat_id, update_id)
+            update_id = reply(bot, chat_id, update_id, log_path)
         except NetworkError:
-            sleep(1)
+            time.sleep(1)
         except Unauthorized:
-            # you haven't allowed the bot in your telegram
             update_id += 1
 
-def reply(bot, chat_id, update_id):
+def reply(bot, chat_id, update_id, log_path):
     """Assumes you are the only one talking to this bot."""
 
     for update in bot.get_updates(offset=update_id, timeout=10):
         update_id = update.update_id + 1
         if 'logs' in update.message.text:
-            #TODO: GET do tail -n 5 of log file
-            message = 'TESTING'
+            message = check_logs(log_path) 
             update.message.reply_text(message)
 
     return update_id
 
+def check_logs(log_path):
+    try:
+        stream = os.popen(f'tail -n 5 {log_path}')
+        output = stream.read()
+    except:
+        output = 'Nothing Found'
+
+    return output
+
 def experiment_ended(bot, chat_id, log_path, ending_phrase):
     """Check if the experiment has ended and notify you when an experiment 
     has ended"""
-    stream = os.popen(f'tail -n 5 {log_path}')
-    output = stream.read()
+    output = check_logs(log_path)
+
     if ending_phrase in output:
         # the experiment script finished
         send_message(bot, chat_id, output)
