@@ -1,0 +1,13 @@
+ hello there! (hopefully you get the star wars meme reference)
+
+ Copy me to your local machine OR to the server!
+
+ hint: Use the comand scp
+
+ Don't know how to use ah?
+
+ This one ahhh
+
+ run: man scp
+
+ That is how the manual/help for commands is shown in the command line
